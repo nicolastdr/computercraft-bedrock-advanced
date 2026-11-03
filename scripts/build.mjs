@@ -47,7 +47,6 @@ const block = {
   "minecraft:block": {
     description: { identifier: "ccba:computer_block", menu_category: { category: "items", group: "itemGroup.name.custom" } },
     components: {
-      "minecraft:display_name": "Computador de Blocos",
       "minecraft:destructible_by_mining": { seconds_to_destroy: 3.5 },
       "minecraft:destructible_by_explosion": { explosion_resistance: 12 },
       "minecraft:collision_box": true,
@@ -92,6 +91,10 @@ const terrain = { resource_pack_name: "ccba_resource", texture_name: "atlas.terr
   ccba_computer_top: { textures: "textures/blocks/computer_top" }
 }};
 await writeFile(stagePath + "resource/textures/terrain_texture.json", JSON.stringify(terrain, null, 2));
+await mkdir(stagePath + "resource/texts", { recursive: true });
+await writeFile(stagePath + "resource/texts/languages.json", JSON.stringify(["en_US", "pt_BR"], null, 2));
+await writeFile(stagePath + "resource/texts/en_US.lang", "tile.ccba:computer_block.name=Block Computer\\n");
+await writeFile(stagePath + "resource/texts/pt_BR.lang", "tile.ccba:computer_block.name=Computador de Blocos\\n");
 
 function png16(pixels) {
   const crcTable = Array.from({length:256}, (_,n) => { let c=n; for(let k=0;k<8;k++) c=(c&1)?(0xedb88320^(c>>>1)):(c>>>1); return c>>>0; });
