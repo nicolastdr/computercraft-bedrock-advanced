@@ -1,10 +1,14 @@
 import { system } from "@minecraft/server";
+import { openComputer } from "../ui/computer.js";
 
 export function registerComputerBlocks(): void {
-  // A definição visual e o registro de blocos customizados no Bedrock são
-  // declarativos (Behavior/Resource Pack). Este ponto conecta eventos e lógica
-  // quando o jogador interage com ccba:computer_block.
-  system.run(() => {
-    console.warn("[CCBA] Bloco ccba:computer_block: aguardando interação.");
+  system.beforeEvents.startup.subscribe((event) => {
+    event.blockComponentRegistry.registerCustomComponent("ccba:computer_interaction", {
+      onPlayerInteract: (interaction) => {
+        const player = interaction.player;
+        if (!player) return;
+        system.run(() => openComputer(player, interaction.block));
+      }
+    });
   });
 }
