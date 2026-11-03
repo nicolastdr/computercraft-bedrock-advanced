@@ -62,6 +62,21 @@ const block = {
   }
 };
 await writeFile(stagePath + "behavior/blocks/computer_block.json", JSON.stringify(block, null, 2));
+await mkdir(stagePath + "behavior/recipes", { recursive: true });
+const recipe = {
+  format_version: "1.20.10",
+  "minecraft:recipe_shaped": {
+    description: { identifier: "ccba:computer_block_recipe" },
+    tags: ["crafting_table"],
+    pattern: ["DDD", "DBD", "DDD"],
+    key: {
+      D: { item: "minecraft:dirt" },
+      B: { item: "minecraft:redstone_block" }
+    },
+    result: { item: "ccba:computer_block", count: 1 }
+  }
+};
+await writeFile(stagePath + "behavior/recipes/computer_block.json", JSON.stringify(recipe, null, 2));
 const terrain = { resource_pack_name: "ccba_resource", texture_name: "atlas.terrain", padding: 8, num_mip_levels: 4, texture_data: {
   ccba_computer_front: { textures: "textures/blocks/computer_front" },
   ccba_computer_side: { textures: "textures/blocks/computer_side" },
