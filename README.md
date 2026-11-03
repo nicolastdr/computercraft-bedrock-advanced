@@ -1,33 +1,31 @@
 # ComputerCraft Bedrock Advanced
 
-Addon para Minecraft Bedrock 1.26.60 com computador cúbico programável em Lua, interface de terminal e base para periféricos.
+Addon experimental para Minecraft Bedrock 1.26.60: computador cúbico com interface, armazenamento de programas e execução de Lua real através da VM Fengari.
 
-## Estado desta versão (0.2.0)
+## Marco 0.2 — núcleo inicial em desenvolvimento
 
-Implementado no projeto:
-- Bloco físico `ccba:computer_block`, com colisão, seleção e interação.
-- Texturas pixel-art geradas durante a compilação para frente, laterais e topo.
-- Interface de interação com ações para executar, editar/criar e listar arquivos.
-- Execução de código Lua real por Fengari.
-- Salvamento de arquivos Lua em propriedade persistente do jogador.
-- Receita: 8 blocos de terra ao redor de 1 bloco de redstone.
-- Pipeline GitHub Actions para empacotar Behavior Pack + Resource Pack em `.mcaddon`.
+Incluído no código:
+- Bloco físico `ccba:computer_block` com geometria cúbica, colisão e seleção.
+- Texturas pixel-art próprias para frente, laterais e topo.
+- Nome localizado em português e inglês.
+- Receita de bancada: 8 terras ao redor de 1 bloco de redstone.
+- Loot table para o bloco dropar a si mesmo.
+- Interação que abre menu com executar, criar/editar e listar arquivos.
+- Arquivos guardados no armazenamento dinâmico do mundo, separados pelo ID/posição de cada computador.
+- Interpretador Lua Fengari incorporado, com bibliotecas de sistema removidas.
+- Pipeline para gerar Behavior Pack + Resource Pack e empacotar `.mcaddon`.
 
-Ainda não implementado: periféricos Advanced Peripherals, Turtles, modems/rede, monitores, leitura/escrita de inventários, controle de máquinas e integração de sinais Redstone. A execução Lua ainda não tem um escalonador de instruções com limite de tempo; evite programas com loops infinitos.
+## Limitações atuais — não é a versão completa
 
-## Instalação (quando o artefato da compilação estiver publicado)
+- O campo de código usa o formulário nativo de texto do Bedrock; ainda não existe editor de código multilinha completo.
+- A VM não possui ainda escalonador/limite de instruções. Não execute loops infinitos ou programas longos.
+- Lua ainda não possui API de periféricos: `redstone`, `peripheral`, `turtle`, inventários e mundo ainda não estão ligados ao runtime.
+- Turtles, monitores, modems, rede, servidor, sensores e controle de máquinas ainda não foram implementados.
+- O addon ainda precisa ser validado dentro do Minecraft 1.26.60. A compilação no GitHub Actions precisa terminar com sucesso antes de distribuir o arquivo como instalável testado.
 
-1. Baixe `ComputerCraft-Bedrock-Advanced.mcaddon` na seção **Actions → Build Addon → Artifacts** do GitHub.
-2. Abra o arquivo no Minecraft para importar os dois pacotes.
-3. Crie um mundo de teste e ative o Behavior Pack e o Resource Pack.
-4. Entre no mundo, fabrique o computador com 8 terras e 1 bloco de redstone no centro.
-5. Coloque o bloco e interaja com ele. O menu permite editar um arquivo Lua e executá-lo.
+## Compilação
 
-Se o item não aparecer na receita, teste em um mundo novo e confira o Content Log do Minecraft.
-
-## Desenvolvimento
-
-Requer Node.js 20+.
+Node.js 20 ou superior:
 
 ```sh
 npm install
@@ -35,13 +33,15 @@ npm run check
 npm run build
 ```
 
-O pacote é gerado em `dist/ComputerCraft-Bedrock-Advanced.mcaddon`.
+O arquivo esperado é `dist/ComputerCraft-Bedrock-Advanced.mcaddon`.
+
+No GitHub, abra **Actions → Build Addon** e baixe o artefato quando a execução estiver concluída com sucesso.
 
 ## Arquitetura
 
-- `src/computer`: componentes e lógica do computador.
-- `src/ui`: interface e editor de arquivos.
-- `src/lua`: VM Lua Fengari.
-- `scripts/build.mjs`: gera manifests, JSON do bloco, texturas PNG e arquivo final.
+- `src/computer`: registro do componente de interação do computador.
+- `src/ui`: menu, arquivos e execução.
+- `src/lua`: VM Fengari.
+- `scripts/build.mjs`: gera manifests, bloco, receita, loot table, atlas e texturas.
 
-A API oficial do Bedrock é JavaScript; o addon incorpora Fengari para executar Lua real. A camada de periféricos será conectada progressivamente às APIs do mundo, sem expor diretamente APIs arbitrárias do JavaScript aos programas Lua.
+A Script API do Bedrock é JavaScript; Fengari executa código Lua dentro do pacote. As APIs do jogo serão expostas ao Lua por uma camada controlada de periféricos.
