@@ -52,6 +52,7 @@ const block = {
       "minecraft:destructible_by_explosion": { explosion_resistance: 12 },
       "minecraft:collision_box": true,
       "minecraft:selection_box": true,
+      "minecraft:geometry": { identifier: "minecraft:geometry.full_block" },
       "minecraft:material_instances": {
         "*": { texture: "ccba_computer_side", render_method: "opaque" },
         "north": { texture: "ccba_computer_front", render_method: "opaque" },
