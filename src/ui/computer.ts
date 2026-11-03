@@ -1,4 +1,5 @@
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
+import { world } from "@minecraft/server";
 import type { Player, Block } from "@minecraft/server";
 import { executeLua } from "../lua/runtime.js";
 
@@ -10,9 +11,9 @@ function computerId(block: Block): string {
   return `${block.dimension.id}:${p.x},${p.y},${p.z}`;
 }
 type ComputerStorage = { [computerId: string]: SavedProgram };
-function loadPrograms(player: Player, id: string): SavedProgram {
+function loadPrograms(_player: Player, id: string): SavedProgram {
   try {
-    const raw = player.getDynamicProperty(PROPERTY);
+    const raw = world.getDynamicProperty(PROPERTY);
     if (typeof raw === "string") {
       const all = JSON.parse(raw) as ComputerStorage;
       return all[id] ?? {};
@@ -25,7 +26,7 @@ function loadPrograms(player: Player, id: string): SavedProgram {
 function savePrograms(player: Player, id: string, programs: SavedProgram): void {
   let all: ComputerStorage = {};
   try {
-    const raw = player.getDynamicProperty(PROPERTY);
+    const raw = world.getDynamicProperty(PROPERTY);
     if (typeof raw === "string") all = JSON.parse(raw) as ComputerStorage;
   } catch { all = {}; }
   all[id] = programs;
@@ -34,7 +35,7 @@ function savePrograms(player: Player, id: string, programs: SavedProgram): void 
     player.sendMessage("§cMemória de programas cheia. Apague arquivos antigos.");
     return;
   }
-  player.setDynamicProperty(PROPERTY, serialized);
+  world.setDynamicProperty(PROPERTY, serialized);
 }
 
 export function openComputer(player: Player, block: Block): void {
