@@ -51,6 +51,7 @@ const block = {
       "minecraft:destructible_by_explosion": { explosion_resistance: 12 },
       "minecraft:collision_box": true,
       "minecraft:selection_box": true,
+      "minecraft:loot": "loot_tables/blocks/computer_block.json",
       "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
         "*": { texture: "ccba_computer_side", render_method: "opaque" },
@@ -70,7 +71,15 @@ const block = {
   }
 };
 await writeFile(stagePath + "behavior/blocks/computer_block.json", JSON.stringify(block, null, 2));
+const loot = {
+  pools: [{
+    rolls: 1,
+    entries: [{ type: "item", name: "ccba:computer_block", weight: 1 }]
+  }]
+};
+await writeFile(stagePath + "behavior/loot_tables/blocks/computer_block.json", JSON.stringify(loot, null, 2));
 await mkdir(stagePath + "behavior/recipes", { recursive: true });
+await mkdir(stagePath + "behavior/loot_tables/blocks", { recursive: true });
 const recipe = {
   format_version: "1.20.10",
   "minecraft:recipe_shaped": {
