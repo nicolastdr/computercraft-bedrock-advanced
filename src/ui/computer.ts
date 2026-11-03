@@ -9,17 +9,27 @@ function computerId(block: Block): string {
   const p = block.location;
   return `${block.dimension.id}:${p.x},${p.y},${p.z}`;
 }
-function loadPrograms(player: Player): SavedProgram {
+type ComputerStorage = { [computerId: string]: SavedProgram };
+function loadPrograms(player: Player, id: string): SavedProgram {
   try {
     const raw = player.getDynamicProperty(PROPERTY);
-    if (typeof raw === "string") return JSON.parse(raw) as SavedProgram;
+    if (typeof raw === "string") {
+      const all = JSON.parse(raw) as ComputerStorage;
+      return all[id] ?? {};
+    }
   } catch (error) {
     console.warn("[CCBA] Falha ao ler programas: " + String(error));
   }
   return {};
 }
-function savePrograms(player: Player, programs: SavedProgram): void {
-  const serialized = JSON.stringify(programs);
+function savePrograms(player: Player, id: string, programs: SavedProgram): void {
+  let all: ComputerStorage = {};
+  try {
+    const raw = player.getDynamicProperty(PROPERTY);
+    if (typeof raw === "string") all = JSON.parse(raw) as ComputerStorage;
+  } catch { all = {}; }
+  all[id] = programs;
+  const serialized = JSON.stringify(all);
   if (serialized.length > 30000) {
     player.sendMessage("§cMemória de programas cheia. Apague arquivos antigos.");
     return;
@@ -29,20 +39,20 @@ function savePrograms(player: Player, programs: SavedProgram): void {
 
 export function openComputer(player: Player, block: Block): void {
   const id = computerId(block);
-  const programs = loadPrograms(player);
+  const programs = loadPrograms(player, id);
   const form = new ActionFormData().title("§l§0Computador de Blocos")
     .body(`§7ID: §f${id}\n§7Arquivos salvos: §f${Object.keys(programs).length}\n\n§fSelecione uma operação.`)
     .button("§a▶ Executar programa").button("§b✎ Editar / criar programa")
     .button("§e▤ Arquivos salvos").button("§cDesligar");
   form.show(player).then(response => {
     if (response.canceled) return;
-    if (response.selection === 0) void chooseProgram(player);
-    if (response.selection === 1) void editProgram(player);
-    if (response.selection === 2) void listPrograms(player);
+    if (response.selection === 0) void chooseProgram(player, id);
+    if (response.selection === 1) void editProgram(player, id);
+    if (response.selection === 2) void listPrograms(player, id);
   }).catch(error => player.sendMessage("§cErro na interface: " + String(error)));
 }
-async function editProgram(player: Player): Promise<void> {
-  const programs = loadPrograms(player);
+async function editProgram(player: Player, id: string): Promise<void> {
+  const programs = loadPrograms(player, id);
   const response = await new ModalFormData().title("Editor Lua")
     .textField("Nome do arquivo", "startup.lua", { defaultValue: "startup.lua" })
     .textField("Código Lua", 'print("Olá, mundo!")', programs["startup.lua"] ?? '-- Programa Lua\nprint("Olá, mundo!")')
@@ -55,11 +65,11 @@ async function editProgram(player: Player): Promise<void> {
   }
   if (source.length > 12000) { player.sendMessage("§cLimite: 12.000 caracteres."); return; }
   programs[name] = source;
-  savePrograms(player, programs);
+  savePrograms(player, id, programs);
   player.sendMessage(`§aArquivo ${name} salvo.`);
 }
-async function chooseProgram(player: Player): Promise<void> {
-  const programs = loadPrograms(player);
+async function chooseProgram(player: Player, id: string): Promise<void> {
+  const programs = loadPrograms(player, id);
   const names = Object.keys(programs);
   if (!names.length) { player.sendMessage("§eNenhum programa salvo. Crie um arquivo primeiro."); return; }
   const form = new ActionFormData().title("Executar Lua").body("Escolha o arquivo:");
@@ -73,8 +83,8 @@ async function chooseProgram(player: Player): Promise<void> {
   if (!result.ok) player.sendMessage("§cErro Lua: " + (result.error ?? "erro desconhecido").slice(0, 240));
   else player.sendMessage("§aPrograma finalizado.");
 }
-async function listPrograms(player: Player): Promise<void> {
-  const programs = loadPrograms(player);
+async function listPrograms(player: Player, id: string): Promise<void> {
+  const programs = loadPrograms(player, id);
   const names = Object.keys(programs);
   if (!names.length) { player.sendMessage("§eNenhum arquivo Lua salvo."); return; }
   player.sendMessage("§bArquivos Lua:");
