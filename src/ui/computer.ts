@@ -55,7 +55,7 @@ async function editProgram(player: Player, id: string): Promise<void> {
   const programs = loadPrograms(player, id);
   const response = await new ModalFormData().title("Editor Lua")
     .textField("Nome do arquivo", "startup.lua", { defaultValue: "startup.lua" })
-    .textField("Código Lua", 'print("Olá, mundo!")', programs["startup.lua"] ?? '-- Programa Lua\nprint("Olá, mundo!")')
+    .textField("Código Lua", 'print("Olá, mundo!")', { defaultValue: programs["startup.lua"] ?? '-- Programa Lua\nprint("Olá, mundo!")' })
     .show(player);
   if (response.canceled || !response.formValues) return;
   const name = String(response.formValues[0] ?? "startup.lua").trim();
