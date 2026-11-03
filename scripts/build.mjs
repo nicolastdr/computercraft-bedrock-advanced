@@ -45,7 +45,7 @@ await writeFile(stagePath + "resource/manifest.json", JSON.stringify(rpManifest,
 const block = {
   format_version: "1.26.0",
   "minecraft:block": {
-    description: { identifier: "ccba:computer_block", menu_category: { category: "items", group: "itemGroup.name.custom" } },
+    description: { identifier: "ccba:computer_block", menu_category: { category: "construction", group: "itemGroup.name.construction" } },
     components: {
       "minecraft:destructible_by_mining": { seconds_to_destroy: 3.5 },
       "minecraft:destructible_by_explosion": { explosion_resistance: 12 },
