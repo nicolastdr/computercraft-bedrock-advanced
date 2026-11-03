@@ -45,18 +45,26 @@ await writeFile(stagePath + "resource/manifest.json", JSON.stringify(rpManifest,
 const block = {
   format_version: "1.26.0",
   "minecraft:block": {
-    description: { identifier: "ccba:computer_block", menu_category: { category: "construction", group: "itemGroup.name redstone" } },
+    description: { identifier: "ccba:computer_block", menu_category: { category: "items", group: "itemGroup.name.custom" } },
     components: {
       "minecraft:display_name": "Computador de Blocos",
       "minecraft:destructible_by_mining": { seconds_to_destroy: 3.5 },
       "minecraft:destructible_by_explosion": { explosion_resistance: 12 },
       "minecraft:collision_box": true,
       "minecraft:selection_box": true,
-      "minecraft:geometry": { identifier: "minecraft:geometry.full_block" },
+      "minecraft:geometry": "minecraft:geometry.full_block",
       "minecraft:material_instances": {
         "*": { texture: "ccba_computer_side", render_method: "opaque" },
         "north": { texture: "ccba_computer_front", render_method: "opaque" },
+        "south": { texture: "ccba_computer_side", render_method: "opaque" },
+        "east": { texture: "ccba_computer_side", render_method: "opaque" },
+        "west": { texture: "ccba_computer_side", render_method: "opaque" },
+        "down": { texture: "ccba_computer_side", render_method: "opaque" },
         "up": { texture: "ccba_computer_top", render_method: "opaque" }
+      },
+      "minecraft:item_visual": {
+        geometry: "minecraft:geometry.full_block",
+        material_instances: { "*": { texture: "ccba_computer_front", render_method: "opaque" } }
       },
       "ccba:computer_interaction": {}
     }
