@@ -1,8 +1,8 @@
 {
   "name": "computercraft-bedrock-advanced",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Lua programmable computers and peripherals for Minecraft Bedrock",
+  "description": "Computadores Lua programáveis e periféricos para Minecraft Bedrock",
   "scripts": {
     "clean": "node scripts/clean.mjs",
     "build": "npm run clean && node scripts/build.mjs",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@minecraft/server": "2.11.0",
+    "@minecraft/server-ui": "2.0.0",
     "fengari": "^0.1.4"
   },
   "devDependencies": {
