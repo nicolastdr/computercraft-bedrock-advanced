@@ -17,6 +17,8 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm install
+      - name: Type check
+        run: npm run check
       - name: Build addon
         run: npm run build
       - name: Upload mcaddon
